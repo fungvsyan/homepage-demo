@@ -1,0 +1,25 @@
+
+@media only screen and (max-width: 750px) {
+#ha, #ap, #ch, #whatTE, #whereTE, #whatsHDD, #whatTB, #whereTS, #whatsHS, #whenTS, #vp, #ec, #tk, #ti, #accom, #commentForm, #mtr ,.container, .bar0 {
+	display: none;
+}
+}
+@media only screen and (min-width: 750px) {
+	.menu {
+		display: none;
+	}
+}
+
+@media only screen and (min-width: 1000px) {
+#thingsTD, #dineDrink, #shop, #planYrTrip {
+	justify-content: space-around;
+	float: left;
+	width: 22%;
+	padding: 15px;
+}
+.row: after {
+	content: "";
+	display: table;
+	clear: both;
+}
+}
