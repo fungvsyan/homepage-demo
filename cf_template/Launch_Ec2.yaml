@@ -1,0 +1,104 @@
+{
+    "AWSTemplateFormatVersion": "2010-09-09",
+    "Description": "Wordpress resources for develop environment",
+    "Parameters": {
+        "NetworkStackName": {
+            "Description": "Name of the Network CloudFormation stack.",
+            "Type": "String",
+            "MinLength": 1,
+            "MaxLength": 255,
+            "AllowedPattern": "^[a-zA-Z][-a-zA-Z0-9]*$"
+        },
+        "EC2InstanceType" : {
+            "Description" : "Provide the size of EC2 instance. Default is t2.micro.",
+            "Type" : "String",
+            "Default" : "t2.micro",
+            "AllowedValues" : ["t2.micro", "t2.small", "t2.medium", "t2.large", "m5.large", "m5.xlarge", "m5.2xlarge", "m5.4xlarge", "c5.large", "c5.xlarge", "c5.2xlarge", "c5.4xlarge"]         
+        },
+        "EC2InstanceKey" : {
+            "Description" : "Provide the key name of EC2 instance.",
+            "Type" : "String",
+            "MinLength": 1,
+            "MaxLength": 25,
+            "AllowedPattern": "^[a-zA-Z][-a-zA-Z0-9]*$"            
+        }
+    },
+    "Resources": {
+        "DevelopWebSG": {
+            "Type" : "AWS::EC2::SecurityGroup",
+            "Properties" : {
+                "GroupName" : "NowTV-Develop-Web-SG",
+                "GroupDescription" : "SecurityGroup for develop Web Instance.",
+                "SecurityGroupIngress" : [
+                    {
+                        "CidrIp" : "0.0.0.0/0",
+                        "IpProtocol" : "tcp",
+                        "FromPort" : 80,
+                        "ToPort" : 80 
+                    },
+                    {
+                        "CidrIp" : "0.0.0.0/0",
+                        "IpProtocol" : "tcp",
+                        "FromPort" : 443,
+                        "ToPort" : 443 
+                    },
+                    {                    
+                        "CidrIp" : "0.0.0.0/0",
+                        "IpProtocol" : "tcp",
+                        "FromPort" : 20,
+                        "ToPort" : 21 
+                    },               
+                    {                    
+                        "CidrIp" : "0.0.0.0/0",
+                        "IpProtocol" : "tcp",
+                        "FromPort" : 1024,
+                        "ToPort" : 1048 
+                    },        
+                ],
+                "VpcId" : {
+                    "Fn::ImportValue": {
+                        "Fn::Sub": "${NetworkStackName}-VPCID"
+                    }
+                }
+            }
+        },
+        "DevelopWeb01": {
+            "Type": "AWS::EC2::Instance",
+            "Properties": {
+                "InstanceType": { "Ref": "EC2InstanceType"},
+                "ImageId": "ami-05b3bcf7f311194b3",
+                "BlockDeviceMappings": [
+                    {
+                        "DeviceName": "/dev/xvda",
+                        "Ebs": {
+                            "VolumeSize": "50",
+                            "VolumeType": "gp2" 
+                        }
+                    }
+                ],
+                "SubnetId": {
+                    "Fn::ImportValue": {
+                        "Fn::Sub": "${NetworkStackName}-SubnetID01"
+                    }
+                },
+                "SecurityGroupIds" : [
+                    {"Ref": "DevelopWebSG"}
+                ],
+                "Monitoring": false,
+                "KeyName": {
+                  "Ref": "EC2InstanceKey"
+                },
+                "Tags" : [
+                    {"Key": "Name", "Value": "NowTV-Develop-Web"},
+                    {"Key": "Environment", "Value": "Develop"}                   
+                ]
+            }
+        },
+        "DevelopEIP" : {
+            "Type" : "AWS::EC2::EIP",
+            "Properties" : {
+                "InstanceId" : { "Ref" : "DevelopWeb01" }
+            }
+        }
+    }
+}
