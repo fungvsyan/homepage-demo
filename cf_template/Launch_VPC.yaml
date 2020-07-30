@@ -53,7 +53,7 @@ Resources:
   SN01:
     Type: 'AWS::EC2::Subnet'
     Properties:
-      AvailabilityZone: ap-northeast-2a
+      AvailabilityZone: ap-east-1a
       CidrBlock: !Ref Subnet01CIDR
       Tags:
         - Key: Name
