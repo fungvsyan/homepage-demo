@@ -8,13 +8,13 @@ Parameters:
     MaxLength: 255
     AllowedPattern: '^[a-zA-Z][-a-zA-Z0-9]*$'
   EC2InstanceType:
-    Description: Provide the size of EC2 instance. Default is t2.micro.
+    Description: Provide the size of EC2 instance. Default is t3.micro.
     Type: String
-    Default: t2.micro
+    Default: t3.micro
     AllowedValues:
-      - t2.micro
-      - t2.small
-      - t2.medium
+      - t3.micro
+      - t3.small
+      - t3.medium
   EC2InstanceKey:
     Description: Provide the key name of EC2 instance.
     Type: String
@@ -46,7 +46,7 @@ Resources:
     Type: 'AWS::EC2::Instance'
     Properties:
       InstanceType: !Ref EC2InstanceType
-      ImageId: ami-0bea7fd38fabe821a
+      ImageId: ami-47317236
       IamInstanceProfile: !Ref S3BucketsInstanceProfile
       BlockDeviceMappings:
         - DeviceName: /dev/xvda
